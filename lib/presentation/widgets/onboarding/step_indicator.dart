@@ -6,9 +6,9 @@ class StepIndicator extends StatelessWidget {
   final List<String> labels;
   final double circleRadius;
   final double lineHeight;
-  final Color activeColor;
-  final Color inactiveColor;
-  final Color textColor;
+  final Color? activeColor;
+  final Color? inactiveColor;
+  final Color? textColor;
 
   const StepIndicator({
     super.key,
@@ -20,11 +20,14 @@ class StepIndicator extends StatelessWidget {
     this.activeColor,
     this.inactiveColor,
     this.textColor,
-  }) : assert(labels.length == totalSteps,
-            'Number of labels must match the total steps');
+  });
 
   @override
   Widget build(BuildContext context) {
+    // Move the assertion to the build method
+    assert(labels.length == totalSteps,
+        'Number of labels must match the total steps');
+            
     final theme = Theme.of(context);
     final actualActiveColor = activeColor ?? theme.colorScheme.primary;
     final actualInactiveColor = inactiveColor ?? Colors.grey.shade300;

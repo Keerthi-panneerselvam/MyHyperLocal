@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:unified_storefronts/config/routes.dart';
 import 'package:unified_storefronts/presentation/providers/auth_provider.dart';
@@ -200,7 +201,7 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
                 controller: _whatsappController,
                 decoration: const InputDecoration(
                   hintText: 'Enter WhatsApp number',
-                  prefixIcon: Icon(Icons.whatsapp),
+                  prefixIcon: Icon(FontAwesomeIcons.whatsapp),
                   prefixText: '+',
                 ),
                 keyboardType: TextInputType.phone,

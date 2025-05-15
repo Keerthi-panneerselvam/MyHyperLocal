@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:unified_storefronts/data/models/product.dart'; // Added import for Product model
 import 'package:unified_storefronts/presentation/providers/products_provider.dart';
 import 'package:unified_storefronts/presentation/providers/seller_provider.dart';
 import 'package:unified_storefronts/presentation/widgets/common/loading_indicator.dart';
 import 'package:intl/intl.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart'; // Import Font Awesome
 
 class StoreAnalyticsScreen extends StatefulWidget {
   const StoreAnalyticsScreen({super.key});
@@ -461,11 +463,16 @@ class _StoreAnalyticsScreenState extends State<StoreAnalyticsScreen> {
                 final productId = _mostViewedProductIds[index];
                 final viewCount = _productAnalytics[productId] as int;
                 
-                // Try to find product in loaded products
-                final product = productsProvider.products.firstWhere(
-                  (p) => p.id == productId,
-                  orElse: () => null,
-                );
+                // Fix: Find product or use null for display only (not returning null as Product)
+                Product? product;
+                try {
+                  product = productsProvider.products.firstWhere(
+                    (p) => p.id == productId,
+                  );
+                } catch (e) {
+                  // Product not found
+                  product = null;
+                }
                 
                 return ListTile(
                   leading: CircleAvatar(
@@ -523,12 +530,12 @@ class _StoreAnalyticsScreenState extends State<StoreAnalyticsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Contact method breakdown
+            // Contact method breakdown - Using Font Awesome icons
             _buildContactMethodItem(
               'WhatsApp',
               whatsappClicks,
               whatsappPercentage,
-              Icons.chat,
+              FontAwesomeIcons.whatsapp, // Font Awesome WhatsApp icon
               Colors.green,
             ),
             
@@ -538,7 +545,7 @@ class _StoreAnalyticsScreenState extends State<StoreAnalyticsScreen> {
               'Instagram',
               instagramClicks,
               instagramPercentage,
-              Icons.camera_alt,
+              FontAwesomeIcons.instagram, // Font Awesome Instagram icon
               Colors.purple,
             ),
             

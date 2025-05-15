@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:unified_storefronts/config/routes.dart';
@@ -694,7 +695,7 @@ class _StoreViewScreenState extends State<StoreViewScreen> with SingleTickerProv
           
           if (_store!.whatsappNumber != null) ...[
             _buildContactItem(
-              Icons.chat,
+              FontAwesomeIcons.whatsapp,
               'WhatsApp',
               _store!.whatsappNumber!,
               Colors.green,

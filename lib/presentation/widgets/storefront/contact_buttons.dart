@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ContactButtons extends StatelessWidget {
   final String? whatsappNumber;
@@ -54,7 +55,7 @@ class ContactButtons extends StatelessWidget {
                 _buildContactButton(
                   context,
                   'WhatsApp',
-                  Icons.whatsapp,
+                  FontAwesomeIcons.whatsapp,
                   Colors.green,
                   onWhatsAppTap,
                 ),

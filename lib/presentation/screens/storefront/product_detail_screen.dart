@@ -7,6 +7,7 @@ import 'package:unified_storefronts/presentation/providers/products_provider.dar
 import 'package:unified_storefronts/presentation/providers/seller_provider.dart';
 import 'package:unified_storefronts/presentation/widgets/common/loading_indicator.dart';
 import 'package:unified_storefronts/core/services/analytics_service.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final String? productId;
@@ -499,7 +500,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(
-              Icons.chat,
+              FontAwesomeIcons.whatsapp,
               color: Colors.white,
             ),
             const SizedBox(width: 8),

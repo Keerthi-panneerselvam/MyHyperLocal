@@ -27,6 +27,7 @@ dependencies:
   qr_flutter: ^4.1.0
   flutter_launcher_icons: ^0.13.1
   permission_handler: ^11.0.0
+  font_awesome_flutter: ^10.5.0 
 
 dev_dependencies:
   flutter_test:
