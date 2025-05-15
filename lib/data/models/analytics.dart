@@ -1,120 +1,157 @@
-import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as path;
-import 'package:unified_storefronts/config/constants.dart';
-import 'package:uuid/uuid.dart';
+class Analytics {
+  final String id;
+  final String storeId;
+  final String sellerId;
+  int pageViews;
+  int uniqueVisitors;
+  int productViews;
+  int contactClicks;
+  int whatsappClicks;
+  int instagramClicks;
+  int phoneClicks;
+  int shareCount;
+  Map<String, int> productViewsMap;
+  Map<String, int> visitorsByDate;
+  DateTime createdAt;
+  DateTime updatedAt;
 
-class StorageService {
-  final FirebaseStorage _storage = FirebaseStorage.instance;
-  final ImagePicker _picker = ImagePicker();
-  final Uuid _uuid = const Uuid();
+  Analytics({
+    required this.id,
+    required this.storeId,
+    required this.sellerId,
+    this.pageViews = 0,
+    this.uniqueVisitors = 0,
+    this.productViews = 0,
+    this.contactClicks = 0,
+    this.whatsappClicks = 0,
+    this.instagramClicks = 0,
+    this.phoneClicks = 0,
+    this.shareCount = 0,
+    this.productViewsMap = const {},
+    this.visitorsByDate = const {},
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  })  : createdAt = createdAt ?? DateTime.now(),
+        updatedAt = updatedAt ?? DateTime.now();
 
-  // Pick image from gallery
-  Future<XFile?> pickImageFromGallery() async {
-    return await _picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 80,
+  // Convert Analytics object to a map
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'storeId': storeId,
+      'sellerId': sellerId,
+      'pageViews': pageViews,
+      'uniqueVisitors': uniqueVisitors,
+      'productViews': productViews,
+      'contactClicks': contactClicks,
+      'whatsappClicks': whatsappClicks,
+      'instagramClicks': instagramClicks,
+      'phoneClicks': phoneClicks,
+      'shareCount': shareCount,
+      'productViewsMap': productViewsMap,
+      'visitorsByDate': visitorsByDate,
+      'createdAt': createdAt.millisecondsSinceEpoch,
+      'updatedAt': updatedAt.millisecondsSinceEpoch,
+    };
+  }
+
+  // Create an Analytics object from a map
+  factory Analytics.fromMap(Map<String, dynamic> map) {
+    return Analytics(
+      id: map['id'],
+      storeId: map['storeId'],
+      sellerId: map['sellerId'],
+      pageViews: map['pageViews'] ?? 0,
+      uniqueVisitors: map['uniqueVisitors'] ?? 0,
+      productViews: map['productViews'] ?? 0,
+      contactClicks: map['contactClicks'] ?? 0,
+      whatsappClicks: map['whatsappClicks'] ?? 0,
+      instagramClicks: map['instagramClicks'] ?? 0,
+      phoneClicks: map['phoneClicks'] ?? 0,
+      shareCount: map['shareCount'] ?? 0,
+      productViewsMap: Map<String, int>.from(map['productViewsMap'] ?? {}),
+      visitorsByDate: Map<String, int>.from(map['visitorsByDate'] ?? {}),
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
+      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt']),
     );
   }
 
-  // Pick image from camera
-  Future<XFile?> pickImageFromCamera() async {
-    return await _picker.pickImage(
-      source: ImageSource.camera,
-      imageQuality: 80,
+  // Create a copy of the Analytics with updated fields
+  Analytics copyWith({
+    String? id,
+    String? storeId,
+    String? sellerId,
+    int? pageViews,
+    int? uniqueVisitors,
+    int? productViews,
+    int? contactClicks,
+    int? whatsappClicks,
+    int? instagramClicks,
+    int? phoneClicks,
+    int? shareCount,
+    Map<String, int>? productViewsMap,
+    Map<String, int>? visitorsByDate,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return Analytics(
+      id: id ?? this.id,
+      storeId: storeId ?? this.storeId,
+      sellerId: sellerId ?? this.sellerId,
+      pageViews: pageViews ?? this.pageViews,
+      uniqueVisitors: uniqueVisitors ?? this.uniqueVisitors,
+      productViews: productViews ?? this.productViews,
+      contactClicks: contactClicks ?? this.contactClicks,
+      whatsappClicks: whatsappClicks ?? this.whatsappClicks,
+      instagramClicks: instagramClicks ?? this.instagramClicks,
+      phoneClicks: phoneClicks ?? this.phoneClicks,
+      shareCount: shareCount ?? this.shareCount,
+      productViewsMap: productViewsMap ?? this.productViewsMap,
+      visitorsByDate: visitorsByDate ?? this.visitorsByDate,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? DateTime.now(),
     );
   }
 
-  // Pick multiple images from gallery
-  Future<List<XFile>> pickMultipleImages() async {
-    return await _picker.pickMultiImage(
-      imageQuality: 80,
+  // Increment page views
+  Analytics incrementPageViews() {
+    return copyWith(
+      pageViews: pageViews + 1,
+      updatedAt: DateTime.now(),
     );
   }
 
-  // Upload profile image
-  Future<String> uploadProfileImage(File file, String sellerId) async {
-    final fileName = '$sellerId-${_uuid.v4()}${path.extension(file.path)}';
-    final ref = _storage.ref().child('${AppConstants.profileImagesPath}/$fileName');
-    
-    final uploadTask = ref.putFile(file);
-    final snapshot = await uploadTask.whenComplete(() => {});
-    
-    return await snapshot.ref.getDownloadURL();
+  // Increment unique visitors
+  Analytics incrementUniqueVisitors() {
+    return copyWith(
+      uniqueVisitors: uniqueVisitors + 1,
+      updatedAt: DateTime.now(),
+    );
   }
 
-  // Upload store logo
-  Future<String> uploadStoreLogo(File file, String storeId) async {
-    final fileName = '$storeId-logo-${_uuid.v4()}${path.extension(file.path)}';
-    final ref = _storage.ref().child('${AppConstants.storeImagesPath}/$fileName');
+  // Increment product views
+  Analytics incrementProductViews(String productId) {
+    final updatedProductViews = productViews + 1;
+    final updatedProductViewsMap = Map<String, int>.from(productViewsMap);
     
-    final uploadTask = ref.putFile(file);
-    final snapshot = await uploadTask.whenComplete(() => {});
-    
-    return await snapshot.ref.getDownloadURL();
-  }
-
-  // Upload store banner
-  Future<String> uploadStoreBanner(File file, String storeId) async {
-    final fileName = '$storeId-banner-${_uuid.v4()}${path.extension(file.path)}';
-    final ref = _storage.ref().child('${AppConstants.storeImagesPath}/$fileName');
-    
-    final uploadTask = ref.putFile(file);
-    final snapshot = await uploadTask.whenComplete(() => {});
-    
-    return await snapshot.ref.getDownloadURL();
-  }
-
-  // Upload product image
-  Future<String> uploadProductImage(File file, String productId) async {
-    final fileName = '$productId-${_uuid.v4()}${path.extension(file.path)}';
-    final ref = _storage.ref().child('${AppConstants.productImagesPath}/$fileName');
-    
-    final uploadTask = ref.putFile(file);
-    final snapshot = await uploadTask.whenComplete(() => {});
-    
-    return await snapshot.ref.getDownloadURL();
-  }
-
-  // Upload multiple product images
-  Future<List<String>> uploadMultipleProductImages(List<File> files, String productId) async {
-    final uploadTasks = <Future<String>>[];
-    
-    for (final file in files) {
-      uploadTasks.add(uploadProductImage(file, productId));
+    if (updatedProductViewsMap.containsKey(productId)) {
+      updatedProductViewsMap[productId] = updatedProductViewsMap[productId]! + 1;
+    } else {
+      updatedProductViewsMap[productId] = 1;
     }
     
-    return await Future.wait(uploadTasks);
+    return copyWith(
+      productViews: updatedProductViews,
+      productViewsMap: updatedProductViewsMap,
+      updatedAt: DateTime.now(),
+    );
   }
 
-  // Delete image by URL
-  Future<void> deleteImage(String imageUrl) async {
-    try {
-      final ref = _storage.refFromURL(imageUrl);
-      await ref.delete();
-    } catch (e) {
-      // Handle error (e.g., image doesn't exist anymore)
-      print('Error deleting image: $e');
-    }
-  }
+  // Get total contact button clicks
+  int get totalContactClicks => contactClicks + whatsappClicks + instagramClicks + phoneClicks;
 
-  // Delete multiple images by URL
-  Future<void> deleteMultipleImages(List<String> imageUrls) async {
-    final deleteTasks = <Future<void>>[];
-    
-    for (final url in imageUrls) {
-      deleteTasks.add(deleteImage(url));
-    }
-    
-    await Future.wait(deleteTasks);
-  }
-
-  // Compress image (Simple compression using imageQuality in picker)
-  // For more advanced compression, consider using additional packages like flutter_image_compress
-  Future<XFile?> compressImage(File file) async {
-    // Using the image_picker's compression capability when picking the image
-    // This is a simplified approach
-    return XFile(file.path);
+  @override
+  String toString() {
+    return 'Analytics(id: $id, pageViews: $pageViews, uniqueVisitors: $uniqueVisitors, productViews: $productViews)';
   }
 }
