@@ -5,14 +5,14 @@ import 'package:unified_storefronts/data/models/seller.dart';
 
 class AuthProvider with ChangeNotifier {
   final AuthService _authService = AuthService();
-  
+
   // State variables
   Seller? _currentSeller;
   bool _isLoading = false;
   String? _verificationId;
   int? _resendToken;
   String? _errorMessage;
-  
+
   // Getters
   Seller? get currentSeller => _currentSeller;
   bool get isLoading => _isLoading;
@@ -20,17 +20,17 @@ class AuthProvider with ChangeNotifier {
   String? get userId => _authService.currentUserId;
   String? get errorMessage => _errorMessage;
   bool get hasVerificationId => _verificationId != null;
-  
+
   // Constructor
   AuthProvider() {
     // Try to load the current user on initialization
     _loadCurrentUser();
   }
-  
+
   // Load current user from auth service
   Future<void> _loadCurrentUser() async {
     _setLoading(true);
-    
+
     try {
       final userId = _authService.currentUserId;
       if (userId != null) {
@@ -42,12 +42,12 @@ class AuthProvider with ChangeNotifier {
       _setLoading(false);
     }
   }
-  
+
   // Verify phone number
   Future<void> verifyPhoneNumber(String phoneNumber) async {
     _setLoading(true);
     _clearErrorMessage();
-    
+
     try {
       await _authService.verifyPhoneNumber(
         phoneNumber: phoneNumber,
@@ -73,23 +73,24 @@ class AuthProvider with ChangeNotifier {
       _setLoading(false);
     }
   }
-  
+
   // Verify OTP code
   Future<bool> verifyOtpCode(String otpCode) async {
     if (_verificationId == null) {
       _setErrorMessage('No verification ID found. Please request a new code.');
       return false;
     }
-    
+
     _setLoading(true);
     _clearErrorMessage();
-    
+
     try {
+      // Create the credential correctly using the static method on FirebaseAuth
       final credential = PhoneAuthProvider.credential(
         verificationId: _verificationId!,
         smsCode: otpCode,
       );
-      
+
       final success = await _signInWithCredential(credential);
       return success;
     } catch (e) {
@@ -98,22 +99,22 @@ class AuthProvider with ChangeNotifier {
       return false;
     }
   }
-  
+
   // Sign in with credential
   Future<bool> _signInWithCredential(PhoneAuthCredential credential) async {
     try {
       final userCredential = await _authService.signInWithCredential(credential);
       final user = userCredential.user;
-      
+
       if (user != null) {
         // Check if seller exists
         _currentSeller = await _authService.getSeller(user.uid);
-        
+
         // If not, create a new seller
         if (_currentSeller == null) {
           _currentSeller = await _authService.createSeller(user);
         }
-        
+
         _setLoading(false);
         notifyListeners();
         return true;
@@ -128,11 +129,11 @@ class AuthProvider with ChangeNotifier {
       return false;
     }
   }
-  
+
   // Sign out
   Future<void> signOut() async {
     _setLoading(true);
-    
+
     try {
       await _authService.signOut();
       _currentSeller = null;
@@ -142,33 +143,33 @@ class AuthProvider with ChangeNotifier {
       _setLoading(false);
     }
   }
-  
+
   // Check if onboarding is complete
   Future<bool> isOnboardingComplete() async {
     return await _authService.isOnboardingComplete();
   }
-  
+
   // Set onboarding as complete
   Future<void> setOnboardingComplete() async {
     await _authService.setOnboardingComplete();
-    
+
     if (_currentSeller != null) {
       _currentSeller = _currentSeller!.copyWith(isOnboardingComplete: true);
       notifyListeners();
     }
   }
-  
+
   // Helper methods
   void _setLoading(bool loading) {
     _isLoading = loading;
     notifyListeners();
   }
-  
+
   void _setErrorMessage(String message) {
     _errorMessage = message;
     notifyListeners();
   }
-  
+
   void _clearErrorMessage() {
     _errorMessage = null;
     notifyListeners();

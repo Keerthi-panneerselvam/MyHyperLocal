@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "728005317641",
+    "project_id": "myhyperlocal-f5dac",
+    "storage_bucket": "myhyperlocal-f5dac.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:728005317641:android:2d3b3472ecfdfd56e5d4d8",
+        "android_client_info": {
+          "package_name": "com.example.myhyperlocal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMnVzmLJ5U-IJDRyCtNfcDb6Sx5p4MsfI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

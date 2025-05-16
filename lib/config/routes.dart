@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:unified_storefronts/presentation/screens/onboarding/business_info_screen.dart';
 import 'package:unified_storefronts/presentation/screens/onboarding/contact_info_screen.dart';
 import 'package:unified_storefronts/presentation/screens/onboarding/onboarding_complete_screen.dart';
+import 'package:unified_storefronts/presentation/screens/onboarding/otp_verification_screen.dart';
 import 'package:unified_storefronts/presentation/screens/onboarding/register_screen.dart';
 import 'package:unified_storefronts/presentation/screens/store_management/add_product_screen.dart';
 import 'package:unified_storefronts/presentation/screens/store_management/dashboard_screen.dart';
@@ -27,6 +29,7 @@ class AppRoutes {
   static const String storeAnalytics = '/store-analytics';
   static const String storeView = '/store-view';
   static const String productDetail = '/product-detail';
+  static const String otpVerification = '/otp_verification';
 
   // Route map
   static final Map<String, WidgetBuilder> routes = {
@@ -41,5 +44,6 @@ class AppRoutes {
     storeAnalytics: (context) => const StoreAnalyticsScreen(),
     storeView: (context) => const StoreViewScreen(),
     productDetail: (context) => const ProductDetailScreen(),
+    // otpVerification: (context) => const OtpVerificationScreen(),
   };
 }
